@@ -1,5 +1,7 @@
 package com.hudlucas.springeccomerce.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class Produto implements Serializable {
     @JoinTable(name = "produto_categoria",
             joinColumns = @JoinColumn(name = "produto_id"),
             inverseJoinColumns = @JoinColumn(name = "categoria_Id"))
+    @JsonIgnore
     private final List<Categoria> categorias = new ArrayList<>();
 
     public Produto() {
