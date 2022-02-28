@@ -1,9 +1,7 @@
 package com.hudlucas.springeccomerce.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hudlucas.springeccomerce.domain.enums.TipoCliente;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
@@ -31,6 +29,9 @@ public class Cliente implements Serializable {
     @ElementCollection
     @CollectionTable(name = "tb_telefone")
     private Set<String> telefones = new HashSet<>();
+
+    @OneToMany(mappedBy = "cliente")
+    private List<Pedido> pedidos = new ArrayList<>();
 
     public Cliente() {
 
@@ -97,6 +98,10 @@ public class Cliente implements Serializable {
 
     public Set<String> getTelefones() {
         return telefones;
+    }
+
+    public List<Pedido> getPedidos() {
+        return pedidos;
     }
 
     @Override

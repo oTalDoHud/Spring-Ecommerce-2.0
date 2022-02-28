@@ -1,12 +1,14 @@
 package com.hudlucas.springeccomerce.configuration;
 
 import com.hudlucas.springeccomerce.domain.*;
+import com.hudlucas.springeccomerce.domain.enums.EstadoPagamento;
 import com.hudlucas.springeccomerce.domain.enums.TipoCliente;
 import com.hudlucas.springeccomerce.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 @Configuration
@@ -30,8 +32,16 @@ public class Instaciation implements CommandLineRunner {
     @Autowired
     private ClienteRepository clienteRepository;
 
+    @Autowired
+    private PedidoRepository pedidoRepository;
+
+    @Autowired
+    private PagamentoRepository pagamentoRepository;
+
     @Override
     public void run(String... args) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
         Categoria cat1 = new Categoria("Informática");
         Categoria cat2 = new Categoria("Escritório");
 
@@ -65,6 +75,18 @@ public class Instaciation implements CommandLineRunner {
 
         cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
 
+        Pedido ped1 = new Pedido(sdf.parse("30/09/2017 10:32:00"), cli1, e1);
+        Pedido ped2 = new Pedido(sdf.parse("10/10/2017 19:35:00"), cli1, e2);
+
+
+        Pagamento pagt1 = new PagamentoComCartao(EstadoPagamento.QUITADO, ped1, 6);
+        ped1.setPagamento(pagt1);
+
+        Pagamento pagt2 = new PagamentoComBoleto(EstadoPagamento.PENDENTE, ped2, sdf.parse("20/10/2017 00:00"), null);
+        ped2.setPagamento(pagt2);
+
+        cli1.getPedidos().addAll(Arrays.asList(ped1, ped2));
+
         categoriaRepo.saveAll(Arrays.asList(cat1, cat2));
         produtoRepository.saveAll(Arrays.asList(p1, p2, p3));
 
@@ -73,5 +95,8 @@ public class Instaciation implements CommandLineRunner {
 
         clienteRepository.saveAll(Arrays.asList(cli1));
         enderecoRepository.saveAll(Arrays.asList(e1, e2));
+
+        pedidoRepository.saveAll(Arrays.asList(ped1, ped2));
+        pagamentoRepository.saveAll(Arrays.asList(pagt1, pagt2));
     }
 }
